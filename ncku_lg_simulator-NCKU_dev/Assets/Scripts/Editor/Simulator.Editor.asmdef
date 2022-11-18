@@ -1,0 +1,20 @@
+{
+    "name": "Simulator.Editor",
+    "references": [
+        "Simulator",
+        "Simulator.Plugins",
+        "Simulator.Bridge.Cyber",
+        "Unity.Mathematics"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

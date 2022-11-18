@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c90ec0c81414104489fe4f2aea826d56, type: 3}
+  m_Name: RuntimeSettings
+  m_EditorClassIdentifier: 
+  PointCloudPoints: {fileID: 4800000, guid: 22e02fd2d08fadf41baf761c4fbb5873, type: 3}
+  PointCloudCircles: {fileID: 4800000, guid: 393a3728bec59f44cb88ac0271436837, type: 3}
+  PointCloudSolidRender: {fileID: 4800000, guid: 4339ed7b3ac08314d919cfa070444620,
+    type: 3}
+  PointCloudSolidBlit: {fileID: 4800000, guid: 3d9d22d1d0f9c484cad3edc30a9285a7, type: 3}
+  PointCloudSolid: {fileID: 7200000, guid: 48893a9a88818a64697d25090e65c9a4, type: 3}
+  AAWireBoxShader: {fileID: 4800000, guid: b1e5437621738c44ca30e61cf15ebdb9, type: 3}
+  WireframeBoxShader: {fileID: 4800000, guid: baede0d38d433654eb6da9f35febf7dd, type: 3}
+  PointCloudShader: {fileID: 4800000, guid: f4f8cf0585f6c5e4f9b9f1ccb82908ee, type: 3}
+  SensorPrefabs:
+  - {fileID: 8467934662373045936, guid: e618f21f22ef0364788fb588f682d093, type: 3}
+  - {fileID: 2783041447292560516, guid: 450bb485b5d0e754c9c26870ebaf1bdf, type: 3}
+  - {fileID: 6574896113943451338, guid: d1b5b0bc4f60e414d98e1f6e3cd73419, type: 3}
+  - {fileID: 6094055635804432560, guid: 74b095570caaa9344b671b1f651ebb06, type: 3}
+  - {fileID: 6435657511017168464, guid: 3f5c340f83695a642b0072d3e421784e, type: 3}
+  - {fileID: 9192961980466913691, guid: 8dec4d3d6171e254b9f9969b38bab929, type: 3}
+  - {fileID: 7137104918729363231, guid: 7ac8eeb04fe26eb42b710b77b3bd3437, type: 3}
+  - {fileID: 327466733414629253, guid: 3478e8e6d14acec4cb722c689a7e1b80, type: 3}
+  - {fileID: 3456451414713215368, guid: 9e81e506d57e5e8459195d8bf0f66420, type: 3}
+  - {fileID: 7715284868972390602, guid: 9397da24250ae5c4282c4b9a954be60f, type: 3}
+  - {fileID: 9176709339769116383, guid: d9b6f16f465eea34e97674b7c5541d24, type: 3}
+  - {fileID: 2318975242363990939, guid: 5f4937b2b1460f246a6fb05aeabd8b91, type: 3}
+  - {fileID: 5863501038009359736, guid: 1b86def11440f9e439144afad5a78256, type: 3}
+  - {fileID: 3805669000543201791, guid: 7409e0cbed0c9924e8bf5fd292e8b8f2, type: 3}
+  - {fileID: 1045925278050730563, guid: 3fd765f74de456f47ab478332f3de7c7, type: 3}
+  - {fileID: -798093424638264352, guid: 23997586206297a40a0c271e9601377b, type: 3}
+  - {fileID: 835172191321637989, guid: fa4d6b8f14144ac4d88488d2d3406f1f, type: 3}
+  - {fileID: 7298661354176162290, guid: 52704b56d3e0f484998cbdee76b4b164, type: 3}
+  - {fileID: 7416276211795438836, guid: 7c43f96e74f176bc19f1929df3221545, type: 3}
+  - {fileID: 8926320593265141670, guid: 823225f8334c708988ff56b6fdf3c722, type: 3}
+  - {fileID: 6798236283089428316, guid: b916b47d1234714418d5d1b2d71d2f8c, type: 3}
+  - {fileID: 3075028223651123413, guid: c14ccc8ff9f29b3438cdd0f4bcebd180, type: 3}
+  - {fileID: 1496227174307647281, guid: ff3fa6ef8378bd34db2a3be061dab674, type: 3}

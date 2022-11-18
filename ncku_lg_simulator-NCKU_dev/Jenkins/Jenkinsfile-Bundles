@@ -1,0 +1,167 @@
+//
+
+pipeline {
+
+  agent {
+    node {
+      label "unity3d"
+      customWorkspace "/home/jenkins/workspace/simulator"
+    }
+  }
+
+  options {
+    gitLabConnection("${GITLAB_HOST}")
+    skipDefaultCheckout(true)
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    timestamps()
+  }
+
+  triggers {
+    gitlab(triggerOnPush: true, triggerOnMergeRequest: true, branchFilterType: "NameBasedFilter", includeBranchesSpec: "master", excludeBranchesSpec: "")
+  }
+
+  parameters {
+    string(name: "CLOUD_URL", defaultValue: "${SIMULATOR_STAGING_CLOUD_URL}", description: "")
+    booleanParam(name: "FORCE_REBUILD", defaultValue: false, description: "")
+  }
+
+  environment {
+    UNITY_USERNAME = credentials("UNITY_USERNAME")
+    UNITY_PASSWORD = credentials("UNITY_PASSWORD")
+    UNITY_SERIAL = credentials("UNITY_SERIAL")
+    PYTHONUNBUFFERED = "1"
+    DISPLAY = ":0"
+    GIT_BRANCH = "${BRANCH_NAME}"
+  }
+
+  stages {
+
+    stage("Git") {
+      steps {
+
+        checkout([
+          $class: "GitSCM",
+          branches: [[name: "refs/heads/master"]],
+          browser: [$class: "GitLab", repoUrl: "https://${GITLAB_HOST}/HDRP/Simulator", version: env.GITLAB_VERSION],
+          extensions: [
+            [$class: "LocalBranch"],
+            [$class: "GitLFSPull"]
+          ],
+          userRemoteConfigs: [[
+            credentialsId: "auto-gitlab",
+            url: "git@${GITLAB_HOST}:HDRP/Simulator.git"
+          ]]
+        ])
+
+        script {
+
+          def environments = env.SIMULATOR_ENVIRONMENTS.split(',')
+          for (int i=0; i<environments.size(); i++) {
+            def environment = environments[i]
+            checkout([
+              $class: "GitSCM",
+              branches: [[name: "refs/heads/master"]],
+              browser: [$class: "GitLab", repoUrl: "https://${GITLAB_HOST}/HDRP/Environments/${environment}", version: env.GITLAB_VERSION],
+              extensions: [
+                [$class: "RelativeTargetDirectory", relativeTargetDir: "Assets/External/Environments/${environment}"],
+                [$class: "LocalBranch"],
+                [$class: "GitLFSPull"]
+              ],
+              userRemoteConfigs: [[
+                credentialsId: "auto-gitlab",
+                url: "git@${GITLAB_HOST}:HDRP/Environments/${environment}.git"
+              ]]
+            ])
+          }
+
+          def vehicles = env.SIMULATOR_VEHICLES.split(',')
+          for (int i=0; i<vehicles.size(); i++) {
+            def vehicle = vehicles[i]
+            checkout([
+              $class: "GitSCM",
+              branches: [[name: "refs/heads/master"]],
+              browser: [$class: "GitLab", repoUrl: "https://${GITLAB_HOST}/HDRP/Vehicles/${vehicle}", version: env.GITLAB_VERSION],
+              extensions: [
+                [$class: "RelativeTargetDirectory", relativeTargetDir: "Assets/External/Vehicles/${vehicle}"],
+                [$class: "LocalBranch"],
+                [$class: "GitLFSPull"]
+              ],
+              userRemoteConfigs: [[
+                credentialsId: "auto-gitlab",
+                url: "git@${GITLAB_HOST}:HDRP/Vehicles/${vehicle}.git"
+              ]]
+            ])
+          }
+
+          env.GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
+          env.SIM_ENVIRONMENTS = sh(returnStdout: true, script: "./Jenkins/get-assets.sh Assets/External/Environments ${S3_DOWNLOAD_HOST} environment 0").trim()
+          env.SIM_VEHICLES = sh(returnStdout: true, script: "./Jenkins/get-assets.sh Assets/External/Vehicles ${S3_DOWNLOAD_HOST} vehicle 0").trim()
+        } // script
+
+        sh "rm -rf *.zip *.html *.xml"
+      }
+    }
+
+    stage("Docker") {
+      environment {
+        DOCKER = credentials("Jenkins-Gitlab")
+      }
+      steps {
+        dir("Jenkins") {
+          sh """
+            docker login -u ${DOCKER_USR} -p ${DOCKER_PSW} ${GITLAB_HOST}:4567
+            docker-compose build build-simulator
+            docker-compose push build-simulator
+          """
+        }
+      }
+    }
+
+    stage("Build") {
+      when {
+        anyOf {
+          not {
+            environment name: "SIM_ENVIRONMENTS", value: ""
+          }
+          not {
+            environment name: "SIM_VEHICLES", value: ""
+          }
+        }
+      }
+      steps {
+        dir("Jenkins") {
+          sh "UID=`id -u` docker-compose run --rm build-bundles"
+        }
+      }
+    } // Build
+
+    stage("Upload") {
+      when {
+        anyOf {
+          not {
+            environment name: "SIM_ENVIRONMENTS", value: ""
+          }
+          not {
+            environment name: "SIM_VEHICLES", value: ""
+          }
+        }
+      }
+      steps {
+        dir("Jenkins") {
+          sh "UID=`id -u` docker-compose run --rm upload-bundles"
+        }
+      }
+    } // Upload
+
+  } // stages
+
+  post {
+    failure {
+      updateGitlabCommitStatus state: "failed"
+    }
+    success {
+      updateGitlabCommitStatus state: "success"
+    }
+  }
+
+}

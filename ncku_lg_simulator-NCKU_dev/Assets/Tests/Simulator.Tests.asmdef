@@ -1,0 +1,23 @@
+{
+    "name": "Simulator.Tests",
+    "references": [
+        "Simulator",
+        "Simulator.Bridge",
+        "Simulator.Bridge.Ros",
+        "Simulator.Bridge.Cyber",
+        "Simulator.Editor"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
